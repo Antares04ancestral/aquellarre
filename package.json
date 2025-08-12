@@ -15,6 +15,7 @@
     "@react-navigation/native": "^6.1.6",
     "@react-navigation/stack": "^6.3.16",
     "@supabase/supabase-js": "^2.50.2",
+    "crypto-js": "^4.2.0",
     "expo": "~53.0.15",
     "expo-status-bar": "~2.2.3",
     "react": "19.0.0",
