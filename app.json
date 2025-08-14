@@ -26,7 +26,10 @@
       "favicon": "./assets/favicon.png"
     },
     "extra": {
-      "QR_SECRET": "CHANGE_ME_IN_ENV"
+      "QR_SECRET": "CHANGE_ME_IN_ENV",
+      "eas": {
+        "projectId": "YOUR_EAS_PROJECT_ID"
+      }
     }
   }
 }
