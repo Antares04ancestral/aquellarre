@@ -37,7 +37,4 @@ yarn-error.*
 *.tsbuildinfo
 
 # Carpetas de estructura personalizada
-contexts/
-screens/
-components/
-navigation/
+
