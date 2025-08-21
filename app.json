@@ -16,12 +16,15 @@
       "supportsTablet": true
     },
     "android": {
+      "package": "com.aquellarre.app",
+      "versionCode": 1,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true
     },
+    "permissions": [],
     "web": {
       "favicon": "./assets/favicon.png"
     },
