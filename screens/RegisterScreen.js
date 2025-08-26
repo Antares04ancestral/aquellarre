@@ -40,7 +40,7 @@ export default function RegisterScreen({ navigation }) {
         }
       }
     } catch (error) {
-      console.log('Error verificando sesión:', error);
+              // Error verificando sesión
     } finally {
       setCheckingSession(false);
     }
@@ -52,23 +52,23 @@ export default function RegisterScreen({ navigation }) {
     const cleanInput = input.trim();
     
     try {
-    // Buscar por email o telefono en minúsculas
-    const { data, error } = await supabase
-      .from('cliente')
-      .select('*')
-      .or(`email.eq.${cleanInput},telefono.eq.${cleanInput}`)
-      .limit(1);
-      
-    setLoading(false);
-      
-    if (error) {
+      // Buscar por email o telefono en minúsculas
+      const { data, error } = await supabase
+        .from('cliente')
+        .select('*')
+        .or(`email.eq.${cleanInput},telefono.eq.${cleanInput}`)
+        .limit(1);
+        
+      setLoading(false);
+        
+      if (error) {
         // Error de conexión o problema con Supabase
         setErrorType('connection');
         setShowErrorModal(true);
-      return;
-    }
-      
-    if (data && data.length > 0) {
+        return;
+      }
+        
+      if (data && data.length > 0) {
         // Datos correctos - guardar sesión y navegar a Home
         const userData = data[0];
         await saveUserSession(userData);
@@ -91,7 +91,7 @@ export default function RegisterScreen({ navigation }) {
     try {
       await AsyncStorage.setItem('userSession', JSON.stringify(userData));
     } catch (error) {
-      console.log('Error guardando sesión:', error);
+              // Error guardando sesión
     }
   };
 
@@ -105,7 +105,7 @@ export default function RegisterScreen({ navigation }) {
       }
 
       if (!Device.isDevice) {
-        console.log('Las notificaciones push requieren un dispositivo físico.');
+        // Las notificaciones push requieren un dispositivo físico
         return;
       }
 
@@ -116,7 +116,7 @@ export default function RegisterScreen({ navigation }) {
         finalStatus = status;
       }
       if (finalStatus !== 'granted') {
-        console.log('Permiso de notificaciones no concedido.');
+        // Permiso de notificaciones no concedido
         return;
       }
 
@@ -130,14 +130,14 @@ export default function RegisterScreen({ navigation }) {
         : await Notifications.getExpoPushTokenAsync();
       const expoPushToken = tokenResponse?.data;
       if (!expoPushToken) {
-        console.log('No se pudo obtener el token de notificaciones.');
+        // No se pudo obtener el token de notificaciones
         return;
       }
 
       try {
         await AsyncStorage.setItem('expoPushToken', expoPushToken);
       } catch (e) {
-        console.log('No se pudo guardar el token localmente:', e);
+        // No se pudo guardar el token localmente
       }
 
       const { error: updateError } = await supabase
@@ -146,10 +146,10 @@ export default function RegisterScreen({ navigation }) {
         .eq('id', userId);
 
       if (updateError) {
-        console.log('Error actualizando token en BD:', updateError);
+        // Error actualizando token en BD
       }
     } catch (e) {
-      console.log('Error registrando notificaciones:', e);
+              // Error registrando notificaciones
     }
   };
 

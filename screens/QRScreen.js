@@ -15,22 +15,12 @@ export default function QRScreen({ route, navigation }) {
   const processSuccessfulCanje = useCallback(async () => {
     try {
       setStatus('realizado');
-      const currentPosiones = (user?.posiones ?? 0);
-      const newValorPosiones = currentPosiones - (potionsCost || 0);
-      const normalizedPosiones = newValorPosiones < 0 ? 0 : newValorPosiones;
-      const { error } = await supabase
-        .from('cliente')
-        .update({ posiones: normalizedPosiones })
-        .eq('id', idCliente);
-      if (error) {
-        Alert.alert('Error', 'No se pudo actualizar las posiones');
-        return;
-      }
+      
       // Mostrar status realizado por 2 segundos antes de navegar
       setTimeout(() => {
-        console.log('Navegando a Home desde QRScreen');
+        // Navegando a Home desde QRScreen
         navigation.navigate('Home', {
-          user: { ...user, posiones: normalizedPosiones },
+          user: { ...user },
         });
       }, 2000);
     } catch (error) {
@@ -57,14 +47,14 @@ export default function QRScreen({ route, navigation }) {
       if (!error && data?.status) {
         setStatus(data.status);
         if (data.status === 'realizado') {
-          console.log('Status cambiado a realizado por polling');
+          // Status cambiado a realizado por polling
           await processSuccessfulCanje();
         } else if (data.status === 'cancelado') {
           navigation.navigate('Home');
         }
       }
     } catch (e) {
-      console.warn('Error al obtener status del canje:', e);
+              // Error al obtener status del canje
     }
   }, [canjeId, processSuccessfulCanje]);
 
@@ -95,11 +85,11 @@ export default function QRScreen({ route, navigation }) {
               filter: `id=eq.${canjeId}`
             },
             async (payload) => {
-              console.log('Evento realtime recibido en QRScreen:', payload);
+              // Evento realtime recibido en QRScreen
               const newStatus = payload.new.status;
               setStatus(newStatus);
               if (newStatus === 'realizado') {
-                console.log('Status cambiado a realizado por realtime');
+                // Status cambiado a realizado por realtime
                 await processSuccessfulCanje();
               } else if (newStatus === 'cancelado') {
                 navigation.navigate('Home');
@@ -116,7 +106,7 @@ export default function QRScreen({ route, navigation }) {
         if (!error && canjeData?.status) {
           setStatus(canjeData.status);
           if (canjeData.status === 'realizado') {
-            console.log('Status ya era realizado al montar');
+            // Status ya era realizado al montar
             await processSuccessfulCanje();
           } else if (canjeData.status === 'cancelado') {
             navigation.navigate('Home');

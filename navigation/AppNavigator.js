@@ -16,7 +16,7 @@ export default function AppNavigator() {
       <Stack.Screen name="QR" component={QRScreen} options={{ headerShown: false }} />
       <Stack.Screen name="Notifications" component={NotificationsScreen} options={{ headerShown: false }} />
       <Stack.Screen name="User" component={UserScreen} options={{ headerShown: false }} />
-      {/* Notifications y User se agregarán después */}
+
     </Stack.Navigator>
   );
 } 

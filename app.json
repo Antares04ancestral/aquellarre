@@ -6,7 +6,7 @@
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
-    "newArchEnabled": true,
+    "newArchEnabled": false,
     "splash": {
       "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
@@ -22,18 +22,24 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "edgeToEdgeEnabled": true
+      "edgeToEdgeEnabled": true,
+      "minSdkVersion": 21,
+      "targetSdkVersion": 33,
+      "compileSdkVersion": 33
     },
     "permissions": [],
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "extra": {
-      "QR_SECRET": "CHANGE_ME_IN_ENV",
       "eas": {
         "projectId": "33f04be8-dbb0-4135-a3d5-7fa112c924a5"
       }
     },
-    "owner": "luis_armando"
+    "owner": "luis_armando",
+    "platforms": ["android", "ios", "web"],
+    "assetBundlePatterns": [
+      "**/*"
+    ]
   }
 }

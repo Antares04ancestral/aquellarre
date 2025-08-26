@@ -174,7 +174,7 @@ export default function HomeScreen({ navigation, route }) {
           .single();
 
         if (error || !data) {
-          console.error('Error al crear canje:', error);
+          // Error al crear canje
           alert(`No se pudo iniciar el canje. Detalle: ${error?.message || 'Error desconocido'}`);
           return;
         }
@@ -189,7 +189,7 @@ export default function HomeScreen({ navigation, route }) {
           canjeId: canjeId,
       });
       } catch (e) {
-        console.error('Excepción al crear canje:', e);
+        // Excepción al crear canje
         alert(`No se pudo iniciar el canje. Detalle: ${e?.message || 'Error desconocido'}`);
       }
     }
@@ -304,7 +304,7 @@ export default function HomeScreen({ navigation, route }) {
                                 source={getImageUrl(item.imagen) ? { uri: getImageUrl(item.imagen) } : require('../assets/icon.png')}
                                 style={styles.productImg}
                                 resizeMode="cover"
-                                onError={(e) => console.warn('Error cargando imagen:', getImageUrl(item.imagen), e.nativeEvent.error)}
+                                onError={(e) => {/* Error cargando imagen */}}
                               />
                     <View style={styles.productInfo}>
                                 <Text style={[
@@ -362,7 +362,7 @@ export default function HomeScreen({ navigation, route }) {
                           source={getImageUrl(item.imagen) ? { uri: getImageUrl(item.imagen) } : require('../assets/icon.png')}
                           style={styles.productImg}
                           resizeMode="cover"
-                          onError={(e) => console.warn('Error cargando imagen:', getImageUrl(item.imagen), e.nativeEvent.error)}
+                          onError={(e) => {/* Error cargando imagen */}}
                         />
                         <View style={styles.productInfo}>
                           <Text style={[

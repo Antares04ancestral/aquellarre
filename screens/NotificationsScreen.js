@@ -9,7 +9,6 @@ export default function NotificationsScreen({ navigation }) {
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState(false);
-  const [claimedIds, setClaimedIds] = useState({});
   const [showLogoutModal, setShowLogoutModal] = useState(false);
 
   useEffect(() => {
@@ -37,7 +36,7 @@ export default function NotificationsScreen({ navigation }) {
         try {
           fetchNotifications(user.id);
         } catch (error) {
-          console.error('Error en actualización automática:', error);
+          // Error en actualización automática
         }
       }
     }, 20000); // 20 segundos
@@ -67,7 +66,6 @@ export default function NotificationsScreen({ navigation }) {
       } else {
         setNotifications(data || []);
         // Limpia claimedIds para evitar inconsistencias
-        setClaimedIds({});
       }
     } catch (error) {
       if (isInitialLoad) {
@@ -110,53 +108,6 @@ export default function NotificationsScreen({ navigation }) {
     } catch (error) {
       setNotifications(previousNotifications);
       Alert.alert('Error', 'Error al eliminar la notificación');
-    }
-  };
-
-  const claimReward = async (notification) => {
-    const isClaimed = notification.reclamada === 'true' || notification.reclamada === true;
-    if (isClaimed) return;
-    try {
-      // 1. Sumar recompensa a posiones del cliente
-      const rewardValue = Number(notification?.recompensa) || 0;
-      if (rewardValue > 0) {
-        const { data: clienteData, error: clienteError } = await supabase
-          .from('cliente')
-          .select('posiones')
-          .eq('id', user.id)
-          .single();
-        if (clienteError) {
-          Alert.alert('Error', 'No se pudo obtener el usuario');
-          return;
-        }
-        const currentPosiones = Number(clienteData?.posiones) || 0;
-        const newPosiones = currentPosiones + rewardValue;
-        const { error: updateError } = await supabase
-          .from('cliente')
-          .update({ posiones: newPosiones })
-          .eq('id', user.id);
-        if (updateError) {
-          Alert.alert('Error', 'No se pudo actualizar las posiones');
-          return;
-        }
-        // 2. Marcar la notificación como reclamada (texto 'true') y poner recompensa en 0
-        const { error: notifError } = await supabase
-          .from('notificaciones')
-          .update({ reclamada: 'true', recompensa: 0 })
-          .eq('id', notification.id);
-        if (notifError) {
-          Alert.alert('Error', 'No se pudo marcar la notificación como reclamada');
-          return;
-        }
-        // 3. Actualizar el usuario local y AsyncStorage
-        const updatedUser = { ...user, posiones: newPosiones };
-        setUser(updatedUser);
-        await AsyncStorage.setItem('userSession', JSON.stringify(updatedUser));
-        // 4. Refrescar notificaciones desde la base de datos antes de permitir otra acción
-        await fetchNotifications(user.id, true);
-      }
-    } catch (error) {
-      Alert.alert('Error', `No se pudo reclamar la recompensa: ${error.message}`);
     }
   };
 
@@ -214,7 +165,6 @@ export default function NotificationsScreen({ navigation }) {
           keyExtractor={item => item?.id?.toString()}
           contentContainerStyle={{ paddingBottom: 90 }}
           renderItem={({ item }) => {
-            const isClaimed = item.reclamada === 'true' || item.reclamada === true;
             return (
               <View style={styles.notification}>
                 <Text style={styles.notificationText}>{item?.titulo || 'Notificación'}</Text>
@@ -235,23 +185,6 @@ export default function NotificationsScreen({ navigation }) {
                   <TouchableOpacity style={styles.deleteBtn} onPress={() => deleteNotification(item.id)}>
                     <Text style={styles.btnText}>Eliminar</Text>
                   </TouchableOpacity>
-                  {!!item?.recompensa && (
-                    <TouchableOpacity 
-                      style={[
-                        styles.rewardBtn,
-                        isClaimed && styles.disabledRewardBtn
-                      ]} 
-                      onPress={() => claimReward(item)}
-                      disabled={isClaimed}
-                    >
-                      <Text style={[
-                        styles.btnText,
-                        isClaimed && styles.disabledBtnText
-                      ]}>
-                        {isClaimed ? 'Reclamado' : 'Reclamar'}
-                      </Text>
-                    </TouchableOpacity>
-                  )}
                 </View>
               </View>
             );
@@ -319,11 +252,8 @@ const styles = StyleSheet.create({
   notification: { backgroundColor: '#2f3142', margin: 10, padding: 14, borderRadius: 12, borderWidth: 2, borderColor: '#8b5cf6' },
   notificationText: { fontSize: 16, color: '#e5e7eb', marginBottom: 10 },
   actions: { flexDirection: 'row', justifyContent: 'flex-end' },
-  rewardBtn: { backgroundColor: '#10b981', paddingVertical: 8, paddingHorizontal: 14, borderRadius: 8, marginRight: 8, borderWidth: 2, borderColor: '#fbbf24' },
-  disabledRewardBtn: { backgroundColor: '#6b7280', borderColor: '#9ca3af' },
   deleteBtn: { backgroundColor: '#dc2626', paddingVertical: 8, paddingHorizontal: 14, borderRadius: 8, borderWidth: 2, borderColor: '#fbbf24' },
   btnText: { color: '#fff', fontWeight: 'bold' },
-  disabledBtnText: { color: '#9ca3af' },
   empty: { color: '#9ca3af', textAlign: 'center', marginTop: 30 },
   potionsInfo: { margin: 10, fontSize: 16, color: '#e5e7eb', textAlign: 'center' },
 

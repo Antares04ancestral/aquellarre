@@ -29,7 +29,7 @@ export default function UserScreen({ navigation }) {
         }
         
         const sessionUser = JSON.parse(stored);
-        console.log('Usuario de sesión cargado:', sessionUser);
+        // Usuario de sesión cargado
         
         if (!sessionUser?.id) {
           Alert.alert('Error', 'Usuario no válido');
@@ -45,7 +45,7 @@ export default function UserScreen({ navigation }) {
           .single();
 
         if (error) {
-          console.error('Error cargando datos de Supabase:', error);
+          // Error cargando datos de Supabase
           Alert.alert('Error', 'No se pudo cargar la información del usuario desde la base de datos');
           return;
         }
@@ -58,7 +58,7 @@ export default function UserScreen({ navigation }) {
 
         // Combinar datos de sesión con datos de Supabase
         const merged = { ...sessionUser, ...data };
-        console.log('Usuario combinado:', merged);
+        // Usuario combinado
         
         setUser(merged);
         setTempUser({
@@ -72,7 +72,7 @@ export default function UserScreen({ navigation }) {
         await AsyncStorage.setItem('userSession', JSON.stringify(merged));
         
       } catch (err) {
-        console.error('Error loading user:', err);
+        // Error loading user
         Alert.alert('Error', 'No se pudo cargar la información del usuario');
       } finally {
         setLoading(false);
@@ -129,7 +129,7 @@ export default function UserScreen({ navigation }) {
           const bytes = base64ToUint8Array(base64);
           arrayBuffer = bytes.buffer;
         } catch (fsErr) {
-          console.warn('FileSystem fallback failed:', fsErr);
+          // FileSystem fallback failed
           Alert.alert('Error', 'No se pudo leer la imagen seleccionada.');
           setUploading(false);
           return;
@@ -148,14 +148,14 @@ export default function UserScreen({ navigation }) {
         .upload(filePath, uploadBody, { contentType, cacheControl: '3600', upsert: true });
 
       if (uploadError) {
-        console.warn('Upload directo falló, intentando URL firmada. Detalle:', uploadError);
+                    // Upload directo falló, intentando URL firmada
         const { data: signedData, error: signedErr } = await supabase
           .storage
           .from(AVATAR_BUCKET)
           .createSignedUploadUrl(filePath);
 
         if (signedErr || !signedData?.token) {
-          console.error('createSignedUploadUrl error:', signedErr);
+                      // createSignedUploadUrl error
           Alert.alert('Error al subir imagen', signedErr?.message || uploadError.message || 'No se pudo preparar la subida.');
           setUploading(false);
           return;
@@ -167,7 +167,7 @@ export default function UserScreen({ navigation }) {
           .uploadToSignedUrl(signedData.path, signedData.token, uploadBody, { contentType });
 
         if (signedUploadErr) {
-          console.error('uploadToSignedUrl error:', signedUploadErr);
+                      // uploadToSignedUrl error
           Alert.alert('Error al subir imagen', signedUploadErr.message || 'No se pudo subir la imagen.');
           setUploading(false);
           return;
@@ -197,7 +197,7 @@ export default function UserScreen({ navigation }) {
       await AsyncStorage.setItem('userSession', JSON.stringify(merged));
       Alert.alert('Listo', 'Imagen de perfil actualizada');
     } catch (err) {
-      console.error('uploadAvatarFromUri exception:', err);
+              // uploadAvatarFromUri exception
       Alert.alert('Error', 'Ocurrió un error al seleccionar/subir la imagen');
     } finally {
       setUploading(false);
@@ -213,7 +213,7 @@ export default function UserScreen({ navigation }) {
       setUploading(true);
       const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
       if (status !== 'granted') {
-        console.log('pickAndUploadImage: permisos no concedidos');
+        // Permisos no concedidos
         Alert.alert('Permisos', 'Se requieren permisos para acceder a tu galería');
         setUploading(false);
         return;
@@ -281,7 +281,7 @@ export default function UserScreen({ navigation }) {
       setEdit(false);
       Alert.alert('Listo', 'Información actualizada');
     } catch (err) {
-      console.error('Update exception:', err);
+              // Update exception
       Alert.alert('Error', 'Ocurrió un error al actualizar');
     } finally {
       setSaving(false);
